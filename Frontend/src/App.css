@@ -214,6 +214,33 @@ text-decoration: none;
 height: 70px;
 
 }
+
+/* Add this to your existing CSS file */
+
+/* Admin Login Page Styles */
+#adminLogin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Full viewport height */
+    background-color: black; /* Consistent with your theme */
+    padding: 20px;
+  }
+
+  .logout-btn {
+    background-color: #ff4d4d; /* Red color for logout button */
+    color: white;
+    border: none;
+    padding: 1px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .logout-btn:hover {
+    background-color: #cc0000; /* Darker red on hover */
+  }
+
 a{
     text-decoration: none;
 }

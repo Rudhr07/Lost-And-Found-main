@@ -2,37 +2,63 @@ import { useState } from "react";
 import logo from "../assets/logo.png";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import { Link, useNavigate } from "react-router-dom"; // Added useNavigate for redirection
 
 function Navbar() {
   const [active, setActive] = useState(false);
-  const [cls,setCls]=useState("inactive")
+  const [cls, setCls] = useState("inactive");
+  const navigate = useNavigate(); // Added useNavigate hook
+
+  // Check if admin is logged in
+  const isAdminLoggedIn = localStorage.getItem("isAdminLoggedIn");
 
   function openNav() {
-    setActive(true)
-   setCls("active")
-    
+    setActive(true);
+    setCls("active");
   }
-  function closeNav(){
-    setActive(false)
-    setCls("inactive")
+
+  function closeNav() {
+    setActive(false);
+    setCls("inactive");
   }
+
+  // Logout function
+  const handleLogout = () => {
+    localStorage.removeItem("isAdminLoggedIn"); // Clear login state
+    navigate("/"); // Redirect to home page
+    window.location.reload(); // Refresh the page to update the navbar
+  };
+
   return (
     <nav>
-      <a href="/"><img src={logo} alt="" /></a>
-      {/* <ul style={{ width: `${width}` }}> */}
+      <Link to="/">
+        <img src={logo} alt="" />
+      </Link>
       <ul className={cls}>
         <li>
-          <a href="/">Home</a>
+          <Link to="/">Home</Link>
         </li>
         <li>
-          <a href="/find">Find item</a>
+          <Link to="/find">Find item</Link>
         </li>
         <li>
-          <a href="/post">Post item</a>
+          {isAdminLoggedIn ? (
+            <Link to="/post">Post item</Link>
+          ) : (
+            <Link to="/admin-login">Post item</Link>
+          )}
         </li>
         <li>
           <a href="/#about">About us</a>
         </li>
+        {/* Logout button */}
+        {isAdminLoggedIn && (
+          <li>
+            <button onClick={handleLogout} className="logout-btn">
+              Logout
+            </button>
+          </li>
+        )}
       </ul>
       {active ? (
         <button className="menu-container" onClick={closeNav}>
@@ -46,4 +72,5 @@ function Navbar() {
     </nav>
   );
 }
+
 export default Navbar;
