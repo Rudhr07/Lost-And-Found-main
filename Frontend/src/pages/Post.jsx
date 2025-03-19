@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Added useEffect
 import Navbar from "../components/Navbar";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -12,14 +12,22 @@ export default function Post() {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [file, setFile] = useState("");
-  const [btn,setBtn]=useState(true)
+  const [btn, setBtn] = useState(true);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
-  const submitData = async (e) => {
+  // Check if admin is logged in
+  useEffect(() => {
+    const isAdminLoggedIn = localStorage.getItem("isAdminLoggedIn");
+    if (!isAdminLoggedIn) {
+      enqueueSnackbar("Unauthorized Access", { variant: "error" });
+      navigate("/admin-login"); // Redirect to login page
+    }
+  }, [navigate, enqueueSnackbar]);
 
+  const submitData = async (e) => {
     e.preventDefault();
-    setBtn(false)
+    setBtn(false);
     const formData = new FormData();
 
     formData.append("name", name);
@@ -29,9 +37,9 @@ export default function Post() {
     formData.append("description", desc);
     formData.append("file", file);
 
-      await axios
+    await axios
       .post(`${api}/item`, formData, {
-        headers: { "Content-Type": "multipart/form-data" }
+        headers: { "Content-Type": "multipart/form-data" },
       })
       .then(() => {
         enqueueSnackbar("Item Posted Successfully", { variant: "success" });
@@ -41,9 +49,9 @@ export default function Post() {
         console.log(err);
         enqueueSnackbar("Error", { variant: "error" });
         setBtn(true);
-        
       });
   };
+
   return (
     <main id="postItem">
       <Navbar />
@@ -99,12 +107,13 @@ export default function Post() {
               />
             </div>
             <div className="input-container">
-            {btn?
-              (<button type="submit" className="submitbtn" onClick={submitData}>
-                Post
-              </button>) : (<button className="submitbtn">
-                Posting...
-              </button>)}
+              {btn ? (
+                <button type="submit" className="submitbtn" onClick={submitData}>
+                  Post
+                </button>
+              ) : (
+                <button className="submitbtn">Posting...</button>
+              )}
             </div>
           </form>
         </div>
